@@ -1,0 +1,197 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>卖家主页面</title>
+<link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+#footer {
+	background-color:#333;
+    color:#666;
+    clear:both;
+    text-align:center;
+	
+	margin-top:30px;
+	padding-top:10px;
+	padding-bottom:10px;
+	
+	bottom: 0;
+	width: 100%;
+	z-index:1000;
+ }
+ 
+.color{
+	color:#FFF; text-decoration:none;
+}
+.color:visited{
+	color:#3399CC; text-decoration:none;
+}
+.color:hover{
+	color:#CF0000; text-decoration:underline;
+}
+  
+</style>
+<script src="../js/getSession.js"></script>
+
+
+<script>
+
+
+function logout(){
+	if(confirm("确定要退出登录吗？")){
+		window.open('../php/userQuit.php','_parent','',false);
+	}else{
+		return false;
+	}
+}
+
+function checkName(){
+	var name = document.getElementById("name").value;
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 	}
+	xmlhttp.onreadystatechange=function(){
+ 		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			if(xmlhttp.responseText == 0){
+				alert('该用户不存在！');
+			}else{
+				document.getElementById("rightname").setAttribute("value",xmlhttp.responseText);
+				document.getElementById("nameinfo").style.display="none";
+				document.getElementById("truenameinfo").style.display="block";
+			}
+    	}
+  	}
+	xmlhttp.open("GET","../../php/checkuName.php?uname="+name,true);
+	xmlhttp.send();
+}
+
+function checkTrueName(){
+	var truename = document.getElementById("truename").value;
+	var name = document.getElementById("name").value;
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 	}
+	xmlhttp.onreadystatechange=function(){
+ 		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			if(xmlhttp.responseText == 0){
+				alert('真实姓名错误！');
+			}else{
+				document.getElementById("question").innerHTML = xmlhttp.responseText;
+				document.getElementById("truenameinfo").style.display="none";
+				document.getElementById("questioninfo").style.display="block";
+				document.getElementById("answerinfo").style.display="block";
+			}
+    	}
+  	}
+	xmlhttp.open("GET","../../php/checkUserTrueName.php?name="+name+"&truename="+truename,true);
+	xmlhttp.send();
+}
+
+function checkAnswer(){
+	var answer = document.getElementById("answer").value;
+	var name = document.getElementById("name").value;
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+ 	}
+	xmlhttp.onreadystatechange=function(){
+ 		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			if(xmlhttp.responseText == 1){
+				document.getElementById("pwd1info").style.display="block";
+				document.getElementById("pwd2info").style.display="block";
+				document.getElementById("uppwd").style.display="block";
+				document.getElementById("questioninfo").style.display="none";
+				document.getElementById("answerinfo").style.display="none";
+			}else{
+				alert('答案错误！');
+			}
+    	}
+  	}
+	xmlhttp.open("GET","../../php/checkUserAnswer.php?answer="+answer+"&name="+name,true);
+	xmlhttp.send();
+}
+
+function checkPwd(form){ 
+	if(form.pwd1.value != "" && form.pwd2.value != ""){
+		if(form.pwd1.value.length < 6 || form.pwd2.value.length < 6){
+			document.getElementById("isequal").innerHTML="密码长度不能低于6位！";
+			return false;
+		}else if(form.pwd1.value == form.pwd2.value){
+			
+			return true;
+		}else{
+			document.getElementById("isequal").innerHTML="密码不一致！";
+			return false
+		}
+	}else{
+		alert("请输入密码！");
+		return false;
+	}
+}
+</script>
+</head>
+<font face="微软雅黑">
+<body>
+<div class="row" style="background-color:#F8F8FF">
+    <div class="col-md-4 col-md-offset-8">
+    	<ul class="nav nav-tabs">
+   			<li><a id="home_page" href="../mainFace.php">首&nbsp;&nbsp;&nbsp;&nbsp;页</a></li>
+		</ul>
+	</div>
+</div>
+<br><br><br>
+<div class="container">
+    <div class="row" id = "nameinfo">
+        <div class="col-md-3 col-md-offset-2" align="right"><h4>请输入您用户名：</h4></div>
+        <div class="col-md-4">
+            <input type = "text" class="form-control" name = "name"  id="name" size = "20"/>
+        </div>
+        <div class="col-md-1"><button class="btn btn-primary" name="upname" id="upname" onClick="checkName()"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
+    </div>
+    <div class="row" id = "truenameinfo" style="display:none">
+        <div class="col-md-3 col-md-offset-2" align="right"><h4>请输入您的真实姓名：</h4></div>
+        <div class="col-md-4">
+            <input type = "text" class="form-control" name = "truename"  id="truename" size = "20"/>
+        </div>
+        <div class="col-md-1"><button class="btn btn-primary" name="uptname" id="uptname" onClick="checkTrueName()"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
+    </div>
+    <div class="row" id = "questioninfo" style="display:none">
+        <div class="col-md-3 col-md-offset-2" align="right"><h4>密保问题：</h4></div>
+        <div class="col-md-4"><h4 id="question"></h4></div>
+    </div>
+    <div class="row" id = "answerinfo" style="display:none">
+        <div class="col-md-3 col-md-offset-2" align="right"><h4>请输入密保答案：</h4></div>
+        <div class="col-md-4"><input type = "text" class="form-control" name = "answer"  id="answer" size = "20"/></div>
+        <div class="col-md-1"><button class="btn btn-primary" name="upanswer" id="upanswer" onClick="checkAnswer()"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
+    </div>
+    <form method="post" name="npassword" action="../../php/modifyUserPwd.php"> 
+        <div class="row" id = "pwd1info" style="display:none">
+            <div class="col-md-3 col-md-offset-2" align="right"><h4>请输入新密码：</h4></div>
+            <div class="col-md-4"><input type = "password" class="form-control" name = "pwd1"  id="pwd1" size = "20" /></div>
+        </div><br>
+        <div class="row" id = "pwd2info" style="display:none">
+            <div class="col-md-3 col-md-offset-2" align="right"><h4>再次输入新密码：</h4></div>
+            <div class="col-md-4"><input type = "password" class="form-control" name = "pwd2"  id="pwd2" size = "20" /></div>
+            <div class="col-md-3" id="isequal" style="color:red"></div>
+        </div>
+        <input type="text" name="rightname" id="rightname" style="display:none">
+        <div class="row" id = "uppwd" style="display:none">
+            <div class="col-md-6" align="right"><input type = "reset" class="btn btn-primary" name = "reset" id = "reset" value = "重置"></div>
+            <div class="col-md-6 " ><input type = "submit" class="btn btn-primary" name = "usubmit" id = "usubmit" value = "提交" onClick="return checkPwd(npassword)"></div>
+        </div>
+    </form>
+</div>
+
+</font>
+
+</body>
+
+</html>
